@@ -9,5 +9,4 @@ class HomeworkStreamApiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
