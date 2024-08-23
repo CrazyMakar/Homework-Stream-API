@@ -1,5 +1,6 @@
 package pro.sky.Homework_Stream.API;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,16 +23,16 @@ public class EmployeeServiceImpl implements EmployeeService {
             new Employee("Anna", "Marchyk", 18_110, 5),
             new Employee("Dima", "Clayd", 17_590, 5)));
 
-    public String hello () {
+    public String hello() {
         return "Добро пожаловать в программу!";
     }
 
     @Override
     public Employee addEmployee(String firstName, String lastName, int salary, int departmentId) {
-        if (validateInput(firstName, lastName)){
+        if (!validateInput(firstName, lastName)) {
             throw new InvalidInputException();
         }
-        Employee employee = new Employee(firstName, lastName,salary,departmentId);
+        Employee employee = new Employee(firstName, lastName, salary, departmentId);
         if (employees.size() >= MAX_EMPLOYEES) {
             throw new EmployeeStorageIsFullException();
         } else if (employees.contains(employee)) {
@@ -43,33 +44,33 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String removeEmployee(String firstName, String lastName) {
-        if (validateInput(firstName, lastName)){
+        if (!validateInput(firstName, lastName)) {
             throw new InvalidInputException();
         }
-        boolean removed = employees.removeIf(p->p.firstName().equals(firstName) && p.lastName().equals(lastName));
-        if (removed){
+        boolean removed = employees.removeIf(p -> p.getFirstName().equals(firstName) && p.getLastName().equals(lastName));
+        if (removed) {
             return "Сотрудник " + firstName + " " + lastName + " удален.";
         }
-        return "Сотрудник " +  firstName + " " + lastName +  " не найден!";
+        return "Сотрудник " + firstName + " " + lastName + " не найден!";
     }
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        if (validateInput(firstName, lastName)){
+        if (!validateInput(firstName, lastName)) {
             throw new InvalidInputException();
         }
         return employees.stream()
-                .filter(e -> e.firstName().equals(firstName) && e.lastName().equals(lastName))
+                .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
                 .findFirst()
-                .orElseThrow(() -> new EmployeeNotFoundException());
+                .orElseThrow(EmployeeNotFoundException::new);
     }
 
     @Override
-    public List <Employee> allEmployees() {
-        return  employees;
+    public List<Employee> allEmployees() {
+        return employees;
     }
 
     public boolean validateInput(String firstName, String lastName) {
-        return !isAlpha(firstName) || !isAlpha(lastName);
+        return isAlpha(firstName) && isAlpha(lastName);
     }
 }
